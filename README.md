@@ -6,6 +6,7 @@ simple generic datastructure implementations for c
 - assert
 - array
 - stack
+- queue
 
 # Build 
 
@@ -24,6 +25,7 @@ prerequisites (make, gcc)
 - [assert examples](./examples/assert_examples.c)
 - [array examples](./examples/array_examples.c)
 - [stack examples](./examples/stack_examples.c)
+- [queue examples](./examples/queue_examples.c)
 
 # Errors
 
