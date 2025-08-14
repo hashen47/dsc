@@ -39,6 +39,63 @@ bool array_append(Array *arr, void *val) {
 	return true;
 }
 
+Array *array_slice(Array *src_arr, int start_i, int end_i) {
+	ASSERT(src_arr != NULL, "(array_slice): src array pointer is NULL");
+	ASSERT(start_i >= 0, "(array_slice): start_i cannot be negative");
+	ASSERT(end_i <= src_arr->offset, "(array_slice): end_i cannot exceed the src array size");
+
+    Array *dst_arr = malloc(sizeof(Array));
+    if (dst_arr == NULL) return NULL;
+
+    dst_arr->el_size = src_arr->el_size;
+    dst_arr->offset = end_i - start_i;
+    dst_arr->bufsize = src_arr->bufsize;
+
+    dst_arr->buf = malloc(sizeof(dst_arr->el_size) * dst_arr->bufsize);
+    if (dst_arr->buf == NULL) return NULL;
+
+    int buf_len = (end_i - start_i) * dst_arr->el_size;
+    for (size_t i = 0; i < buf_len; i++) {
+        *((unsigned char*)dst_arr->buf + i) = *((unsigned char*)src_arr->buf + start_i + i);
+    }
+
+    return dst_arr;
+}
+
+Array *array_copy(Array *src_arr) {
+	ASSERT(src_arr != NULL, "(array_copy): src array pointer is NULL");
+    return array_slice(src_arr, 0, src_arr->offset);
+}
+
+bool array_comp(Array *arr1, Array *arr2) {
+	ASSERT(arr1 != NULL, "(array_comp): arr1 pointer is NULL");
+	ASSERT(arr2 != NULL, "(array_comp): arr2 pointer is NULL");
+	ASSERT(arr1->buf != NULL, "(array_comp): arr1->buf pointer is NULL");
+	ASSERT(arr2->buf != NULL, "(array_comp): arr2->buf pointer is NULL");
+
+    if (arr1->offset != arr2->offset) return false;
+
+    for (size_t i = 0; i < arr1->offset * arr1->el_size; i++) {
+        if (*((unsigned char*)arr1->buf + i) != *((unsigned char*)arr2->buf + i)) return false;
+    }
+
+    return true;
+}
+
+void array_reverse(Array *arr) {
+	ASSERT(arr != NULL, "(array_reverse): arr pointer is NULL");
+	ASSERT(arr->buf != NULL, "(array_reverse): arr->buf pointer is NULL");
+
+    for (size_t i = 0; i < arr->offset; i++) {
+        if (i >= arr->offset-1-i) break;
+        for (size_t j = 0; j < arr->el_size; j++) {
+            unsigned char temp = *((unsigned char*)arr->buf + (i*arr->el_size) + j);
+            *((unsigned char*)arr->buf + (i*arr->el_size) + j) = *((unsigned char*)arr->buf + ((arr->offset-1-i) * arr->el_size) + j);
+            *((unsigned char*)arr->buf + ((arr->offset-1-i) * arr->el_size) + j) = temp;
+        }
+    }
+}
+
 bool array_insert_at(Array *arr, int index, void *val) {
 	ASSERT(arr != NULL, "(array_insert_at): array pointer is NULL");
 	ASSERT(index >= 0, "(array_insert_at): index cannot be negative");

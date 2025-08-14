@@ -43,11 +43,27 @@ void *array_pop(Array *arr);
 // clear the entire array, if success then return true, else return false
 bool array_clear(Array *arr);
 
+// slice the array in given range, (start_i inclusive, end_i exclusive)
+Array *array_slice(Array *src_arr, int start_i, int end_i);
+
+// copy the array
+Array *array_copy(Array *arr);
+
+// reverse the array
+void array_reverse(Array *arr);
+
+// compare two arrays, is two are equal return true, else false
+bool array_comp(Array *arr1, Array *arr2);
+
 // free the array 
 void array_free(Array *arr);
 
 #define ARRAY_INIT(type) array_init(sizeof(type))
 #define ARRAY_APPEND(arr, val) array_append((arr), &(val))
+#define ARRAY_SLICE(arr, start_i, end_i) array_slice(arr, start_i, end_i)
+#define ARRAY_COPY(arr) array_copy(arr)
+#define ARRAY_COMP(arr1, arr2) array_comp(arr1, arr2)
+#define ARRAY_REVERSE(arr) array_reverse(arr)
 #define ARRAY_INSERT_AT(arr, index, val) array_insert_at((arr), (index), &(val))
 #define ARRAY_REPLACE_AT(arr, index, val) array_replace_at((arr), (index), &(val))
 #define ARRAY_GET_AT(arr, index, type) (*(type*)array_get_at((arr), (index)))
