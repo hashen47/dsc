@@ -1,5 +1,6 @@
 #include "../includes/array.h"
 #include <string.h>
+#include <time.h>
 
 #define run_test(test_func_name) do { \
     test_func_name(); \
@@ -526,7 +527,39 @@ void test_with_people() {
     }
 
     ARRAY_FREE(arr1);
+}
 
+void test_array_copy_slice_reverse_comp(void) {
+    // TODO: may be in the future test with other types also for now this is enough 
+    Array *arr1 = ARRAY_INIT(int);
+    Array *arr2 = ARRAY_INIT(int);
+
+    size_t size = 20;
+    srand(time(NULL));
+    for (size_t i = 0; i < size; i++) {
+        int val = rand() % 100;
+        ARRAY_APPEND(arr1, val);
+        ARRAY_APPEND(arr2, val);
+    }
+
+    Array *arr3 = ARRAY_SLICE(arr1, 0, 10);
+    Array *arr4 = ARRAY_SLICE(arr2, 0, 10);
+    Array *arr5 = ARRAY_COPY(arr1);
+
+    ASSERT(ARRAY_COMP(arr1, arr2), "arr1 and arr2 are not the same");
+    ASSERT(ARRAY_COMP(arr3, arr4), "arr3 and arr4 are not the same");
+
+    ARRAY_REVERSE(arr5);
+
+    for (size_t i = 0; i < ARRAY_SIZE(arr1); i++) {
+        ASSERT(ARRAY_GET_AT(arr1, i, int) == ARRAY_GET_AT(arr5, ARRAY_SIZE(arr1)-1-i, int), "arr1 element and arr5 (reverse of arr5) are not equal in reverse order");
+    }
+
+    ARRAY_FREE(arr1);
+    ARRAY_FREE(arr2);
+    ARRAY_FREE(arr3);
+    ARRAY_FREE(arr4);
+    ARRAY_FREE(arr5);
 }
 
 int main(void) {
@@ -534,4 +567,5 @@ int main(void) {
     run_test(test_with_str);
     run_test(test_with_people);
     run_test(test_with_people_ptr);
+    run_test(test_array_copy_slice_reverse_comp);
 }
